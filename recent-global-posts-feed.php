@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Recent Global Posts Feed
-Plugin URI: 
-Description: RSS2 feeds
+Plugin URI: http://premium.wpmudev.org/project/recent-global-posts-feed
+Description: A sitewide feed of all the latest posts from all the blogs across your entire site
 Author: Andrew Billits (Incsub)
-Version: 1.0.4
-Author URI:
+Version: 1.0.5
+WDP ID: 70
 */ 
 
 /* 
@@ -25,10 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-if (empty($wp)) {
-	require_once('../wp-load.php');
-	wp('feed=rss2');
-}
+require_once('../wp-load.php');
 
 //------------------------------------------------------------------------//
 //---Config---------------------------------------------------------------//
