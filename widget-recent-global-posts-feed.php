@@ -64,8 +64,7 @@ function widget_recent_global_posts_feed_init() {
 				<div style="text-align:left">
                 
 				<label for="recent-global-posts-feed-title" style="line-height:35px;display:block;"><?php _e('Title', 'widgets'); ?>:<br />
-                <input class="widefat" id="recent-global-posts-feed-title" name="recent-global-posts-feed-title" value="<?php echo $options['recent-global-posts-feed-title']; ?>" type="text" style="width:95%;">
-                </select>
+                <input class="widefat" id="recent-global-posts-feed-title" name="recent-global-posts-feed-title" value="<?php echo $options['recent-global-posts-feed-title']; ?>" type="text" style="width:95%;" />
                 </label>
 				<label for="recent-global-posts-feed-rss-image" style="line-height:35px;display:block;"><?php _e('RSS Image', 'widgets'); ?>:<br />
                 <select name="recent-global-posts-feed-rss-image" id="recent-global-posts-feed-rss-image" style="width:95%;">
