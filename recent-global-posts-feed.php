@@ -4,11 +4,11 @@ Plugin Name: Recent Global Posts Feed
 Plugin URI: http://premium.wpmudev.org/project/recent-global-posts-feed
 Description: A sitewide feed of all the latest posts from all the blogs across your entire site
 Author: Andrew Billits (Incsub)
-Version: 1.0.5
+Version: 2.0
 WDP ID: 70
-*/ 
+*/
 
-/* 
+/*
 Copyright 2007-2009 Incsub (http://incsub.com)
 
 This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 require_once('../wp-load.php');
+
+/* -------------------- Update Notifications Notice -------------------- */
+if ( !function_exists( 'wdp_un_check' ) ) {
+  add_action( 'admin_notices', 'wdp_un_check', 5 );
+  add_action( 'network_admin_notices', 'wdp_un_check', 5 );
+  function wdp_un_check() {
+    if ( !class_exists( 'WPMUDEV_Update_Notifications' ) && current_user_can( 'edit_users' ) )
+      echo '<div class="error fade"><p>' . __('Please install the latest version of <a href="http://premium.wpmudev.org/project/update-notifications/" title="Download Now &raquo;">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href="http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/">More information &raquo;</a>', 'wpmudev') . '</a></p></div>';
+  }
+}
+/* --------------------------------------------------------------------- */
 
 //------------------------------------------------------------------------//
 //---Config---------------------------------------------------------------//
