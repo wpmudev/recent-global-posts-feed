@@ -4,7 +4,7 @@ Plugin Name: Recent Global Posts Feed
 Plugin URI: http://premium.wpmudev.org/project/recent-global-posts-feed
 Description: A sitewide feed of all the latest posts from all the blogs across your entire site
 Author: Andrew Billits (Incsub)
-Version: 2.0
+Version: 2.1
 WDP ID: 70
 */
 
@@ -45,14 +45,21 @@ $number = $_GET['number'];
 if ( empty( $number ) ) {
 	$number = '25';
 }
+
+$posttype = $_GET['posttype'];
+if(empty($posttype)) {
+	$posttype = 'post';
+}
 //------------------------------------------------------------------------//
 //---Functions------------------------------------------------------------//
 //------------------------------------------------------------------------//
-$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE site_id = '" . $current_site->id . "' AND blog_public = '1' ORDER BY post_published_gmt DESC LIMIT " . $number;
+global $wpdb;
+
+$query = $wpdb->prepare( "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE site_id = %d AND blog_public = '1' AND post_type = %s ORDER BY post_published_gmt DESC LIMIT %d", $current_site->id, $posttype, $number);
 $posts = $wpdb->get_results( $query, ARRAY_A );
 
 if ( count( $posts ) > 0 ) {
-	$last_published_post_date_time = $wpdb->get_var("SELECT post_published_gmt FROM " . $wpdb->base_prefix . "site_posts WHERE site_id = '" . $current_site->id . "' AND blog_public = '1' ORDER BY post_published_gmt DESC LIMIT 1");
+	$last_published_post_date_time = $wpdb->get_var( $wpdb->prepare( "SELECT post_published_gmt FROM " . $wpdb->base_prefix . "site_posts WHERE site_id = %d AND blog_public = '1' AND post_type = %s ORDER BY post_published_gmt DESC LIMIT 1", $current_site->id, $posttype ) );
 }
 
 header('Content-Type: text/xml; charset=' . get_option('blog_charset'), true);

@@ -46,82 +46,120 @@ $recent_global_posts_feed_widget_main_blog_only = 'yes'; //Either 'yes' or 'no'
 //------------------------------------------------------------------------//
 //---Functions------------------------------------------------------------//
 //------------------------------------------------------------------------//
-function widget_recent_global_posts_feed_init() {
-	global $wpdb, $recent_global_posts_feed_widget_main_blog_only;
 
-	// Check for the required API functions
-	if ( !function_exists('register_sidebar_widget') || !function_exists('register_widget_control') )
-		return;
+class widget_recent_global_posts_feed extends WP_Widget {
 
-	// This saves options and prints the widget's config form.
-	function widget_recent_global_posts_feed_control() {
-		global $wpdb;
-		$options = $newoptions = get_option('widget_recent_global_posts_feed');
-		if ( $_POST['recent-global-posts-feed-submit'] ) {
-			$newoptions['recent-global-posts-feed-title'] = $_POST['recent-global-posts-feed-title'];
-			$newoptions['recent-global-posts-feed-rss-image'] = $_POST['recent-global-posts-feed-rss-image'];
-		}
-		if ( $options != $newoptions ) {
-			$options = $newoptions;
-			update_option('widget_recent_global_posts_feed', $options);
-		}
-		if ( empty( $options['recent-global-posts-feed-title'] ) ) {
-			$options['recent-global-posts-feed-title'] = __('Site Posts Feed');
-		}
-		if ( empty( $options['recent-global-posts-feed-rss-image'] ) ) {
-			$options['recent-global-posts-feed-rss-image'] = 'show';
-		}
-	?>
-				<div style="text-align:left">
+	function widget_recent_global_posts_feed() {
 
-				<label for="recent-global-posts-feed-title" style="line-height:35px;display:block;"><?php _e('Title', 'widgets'); ?>:<br />
-                <input class="widefat" id="recent-global-posts-feed-title" name="recent-global-posts-feed-title" value="<?php echo $options['recent-global-posts-feed-title']; ?>" type="text" style="width:95%;" />
-                </label>
-				<label for="recent-global-posts-feed-rss-image" style="line-height:35px;display:block;"><?php _e('RSS Image', 'widgets'); ?>:<br />
-                <select name="recent-global-posts-feed-rss-image" id="recent-global-posts-feed-rss-image" style="width:95%;">
-                <option value="show" <?php if ($options['recent-global-posts-feed-rss-image'] == 'show'){ echo 'selected="selected"'; } ?> ><?php _e('Show'); ?></option>
-                <option value="hide" <?php if ($options['recent-global-posts-feed-rss-image'] == 'hide'){ echo 'selected="selected"'; } ?> ><?php _e('Hide'); ?></option>
-                </select>
-                </label>
-				<input type="hidden" name="recent-global-posts-feed-submit" id="recent-global-posts-feed-submit" value="1" />
-				</div>
-	<?php
+		$locale = apply_filters( 'rpgpfwidgets_locale', get_locale() );
+		$mofile = dirname(__FILE__) . "/languages/rpgpfwidgets-$locale.mo";
+
+		if ( file_exists( $mofile ) )
+			load_textdomain( 'rpgpfwidgets', $mofile );
+
+		$widget_ops = array( 'classname' => 'rgpwidget', 'description' => __('Recent Global Posts Feed', 'rpgpfwidgets') );
+		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'rpgpfwidget');
+		$this->WP_Widget( 'rpgpfwidget', __('Recent Global Posts Feed', 'rpgpfwidgets'), $widget_ops, $control_ops );
+
 	}
-// This prints the widget
-	function widget_recent_global_posts_feed($args) {
-		global $wpdb, $current_site;
-		extract($args);
-		$defaults = array('count' => 10, 'username' => 'wordpress');
-		$options = (array) get_option('widget_recent_global_posts_feed');
 
-		foreach ( $defaults as $key => $value )
-			if ( !isset($options[$key]) )
-				$options[$key] = $defaults[$key];
+	function widget( $args, $instance ) {
+
+		global $wpdb, $current_site;
+
+		extract($args);
+
+		$defaults = array(	'recentglobalpostsfeedtitle' => '',
+							'recentglobalpostsfeedrssimage'	=>	'',
+							'recentglobalpostsfeedpoststype'	=>	'post'
+						);
+
+		foreach($defaults as $key => $value) {
+			if(isset($instance[$key])) {
+				$defaults[$key] = $instance[$key];
+			}
+		}
+
+		extract($defaults);
+
+		$title = apply_filters('widget_title', $recentglobalpostsfeedtitle );
 
 		?>
-		<?php echo $before_widget; ?>
-			<?php
-			if ( $options['recent-global-posts-feed-rss-image'] == 'hide' ) {
-	            echo $before_title . '<a href="http://' . $current_site->domain . $current_site->path . 'wp-content/recent-global-posts-feed.php" >' . __($options['recent-global-posts-feed-title']) . '</a>' . $after_title;
-			} else {
-	            echo $before_title . '<a href="http://' . $current_site->domain . $current_site->path . 'wp-content/recent-global-posts-feed.php" ><img src="http://' . $current_site->domain . $current_site->path . 'wp-includes/images/rss.png" /> ' . __($options['recent-global-posts-feed-title']) . '</a>' . $after_title;
-			}
-			?>
-		<?php echo $after_widget; ?>
-<?php
+			<?php echo $before_widget; ?>
+				<?php
+				if ( $recentglobalpostsfeedrssimage == 'hide' ) {
+		            echo $before_title . '<a href="http://' . $current_site->domain . $current_site->path . 'wp-content/recent-global-posts-feed.php?posttype=' . $recentglobalpostsfeedpoststype . '" >' . __($recentglobalpostsfeedtitle) . '</a>' . $after_title;
+				} else {
+		            echo $before_title . '<a href="http://' . $current_site->domain . $current_site->path . 'wp-content/recent-global-posts-feed.php?posttype=' . $recentglobalpostsfeedpoststype . '" ><img src="http://' . $current_site->domain . $current_site->path . 'wp-includes/images/rss.png" /> ' . __($recentglobalpostsfeedtitle) . '</a>' . $after_title;
+				}
+				?>
+			<?php echo $after_widget;
 	}
-	// Tell Dynamic Sidebar about our new widget and its control
+
+	function update( $new_instance, $old_instance ) {
+
+		$defaults = array(	'recentglobalpostsfeedtitle' => '',
+							'recentglobalpostsfeedrssimage'	=>	'',
+							'recentglobalpostsfeedpoststype'	=>	'post'
+						);
+
+		foreach ( $defaults as $key => $val ) {
+			$instance[$key] = $new_instance[$key];
+		}
+
+		return $instance;
+
+	}
+
+	function form( $instance ) {
+
+		$defaults = array(	'recentglobalpostsfeedtitle' => '',
+							'recentglobalpostsfeedrssimage'	=>	'',
+							'recentglobalpostsfeedpoststype'	=>	'post'
+						);
+
+		$instance = wp_parse_args( (array) $instance, $defaults );
+
+		extract($instance);
+
+		?>
+			<div style="text-align:left">
+
+			<label for="<?php echo $this->get_field_name( 'recentglobalpostsfeedtitle' ); ?>" style="line-height:35px;display:block;"><?php _e('Title', 'rpgpfwidgets'); ?>:<br />
+            <input class="widefat" id="<?php echo $this->get_field_id( 'recentglobalpostsfeedtitle' ); ?>" name="<?php echo $this->get_field_name( 'recentglobalpostsfeedtitle' ); ?>" value="<?php echo esc_attr(stripslashes($instance['recentglobalpostsfeedtitle'])); ?>" type="text" style="width:95%;" />
+            </label>
+
+			<label for="<?php echo $this->get_field_name( 'recentglobalpostsfeedrssimage' ); ?>" style="line-height:35px;display:block;"><?php _e('RSS Image', 'rpgpfwidgets'); ?>:<br />
+            <select name="<?php echo $this->get_field_name( 'recentglobalpostsfeedrssimage' ); ?>" id="<?php echo $this->get_field_id( 'recentglobalpostsfeedrssimage' ); ?>" style="width:95%;">
+            <option value="show" <?php selected( $instance['recentglobalpostsfeedrssimage'], 'show'); ?> ><?php _e('Show', 'rpgpfwidgets'); ?></option>
+            <option value="hide" <?php selected( $instance['recentglobalpostsfeedrssimage'], 'hide'); ?> ><?php _e('Hide', 'rpgpfwidgets'); ?></option>
+            </select>
+
+			<label for="<?php echo $this->get_field_name( 'recentglobalpostsfeedpoststype' ); ?>" style="line-height:35px;display:block;"><?php _e('Post type', 'rpgpfwidgets'); ?>:<br />
+	        <input class="widefat" id="<?php echo $this->get_field_id( 'recentglobalpostsfeedpoststype' ); ?>" name="<?php echo $this->get_field_name( 'recentglobalpostsfeedpoststype' ); ?>" value="<?php echo esc_attr(stripslashes($instance['recentglobalpostsfeedpoststype'])); ?>" type="text" style="width:95%;" />
+	        </label>
+
+            </label>
+			<input type="hidden" name="<?php echo $this->get_field_name( 'recentglobalpostsfeedsubmit' ); ?>" id="<?php echo $this->get_field_id( 'recentglobalpostsfeedsubmit' ); ?>" value="1" />
+			</div>
+
+		<?php
+	}
+
+}
+
+function widget_recent_global_posts_feed_register() {
+	global $recent_global_posts_feed_widget_main_blog_only, $wpdb;
+
 	if ( $recent_global_posts_feed_widget_main_blog_only == 'yes' ) {
 		if ( $wpdb->blogid == 1 ) {
-			register_sidebar_widget(array(__('Recent Global Posts Feed'), 'widgets'), 'widget_recent_global_posts_feed');
-			register_widget_control(array(__('Recent Global Posts Feed'), 'widgets'), 'widget_recent_global_posts_feed_control');
+			register_widget( 'widget_recent_global_posts_feed' );
 		}
 	} else {
-		register_sidebar_widget(array(__('Recent Global Posts Feed'), 'widgets'), 'widget_recent_global_posts_feed');
-		register_widget_control(array(__('Recent Global Posts Feed'), 'widgets'), 'widget_recent_global_posts_feed_control');
+		register_widget( 'widget_recent_global_posts_feed' );
 	}
 }
 
-add_action('widgets_init', 'widget_recent_global_posts_feed_init');
+add_action( 'widgets_init', 'widget_recent_global_posts_feed_register' );
 
 ?>
