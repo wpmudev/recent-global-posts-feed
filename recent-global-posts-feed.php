@@ -3,8 +3,8 @@
 Plugin Name: Recent Global Posts Feed
 Plugin URI: http://premium.wpmudev.org/project/recent-global-posts-feed
 Description: A sitewide feed of all the latest posts from all the blogs across your entire site
-Author: Andrew Billits (Incsub)
-Version: 2.1
+Author: Andrew Billits (Incsub) / Barry (Incsub)
+Version: 2.2
 WDP ID: 70
 */
 
@@ -90,14 +90,14 @@ $more = 1;
 			$author_display_name = $wpdb->get_var("SELECT display_name FROM " . $wpdb->base_prefix . "users WHERE ID = '" . $post['post_author'] . "'");
 			?>
 			<item>
-				<title><?php echo strip_tags(stripslashes($post['post_title'])); ?></title>
+				<title><?php echo apply_filters( 'the_title_rss', $post['post_title']); ?></title>
 				<link><?php echo $post['post_permalink']; ?></link>
 				<comments><?php echo $post['post_permalink'] . '#comments'; ?></comments>
 				<pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', $post['post_published_gmt'], false); ?></pubDate>
 				<dc:creator><?php echo $author_display_name; ?></dc:creator>
 				<guid isPermaLink="false"><?php echo $post['post_permalink']; ?></guid>
-                <description><![CDATA[<?php echo wp_trim_excerpt($post['post_content']); ?>]]></description>
-                <content:encoded><![CDATA[<?php echo $post['post_content']; ?>]]></content:encoded>
+                <description><![CDATA[<?php echo apply_filters('the_excerpt_rss', wp_trim_excerpt($post['post_content'])); ?>]]></description>
+                <content:encoded><![CDATA[<?php echo apply_filters('the_content_feed', $post['post_content'], 'rss2'); ?>]]></content:encoded>
 				<wfw:commentRss><?php echo $post['post_permalink'] . 'feed/'; ?></wfw:commentRss>
 			</item>
 			<?php
