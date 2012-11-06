@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Recent Posts Feed Widget
+Plugin Name: Recent Posts Feed Icon Widget
 Description:
 Author: Barry (Incsub)
-Version: 2.0
+Version: 3.0
 Author URI:
 */
 
