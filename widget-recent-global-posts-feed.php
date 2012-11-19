@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Recent Posts Feed Icon Widget
-Description:
+Description: Allows a link to the Global Posts Feed to be placed in the sidebar
 Author: Barry (Incsub)
-Version: 3.0
+Version: 3.0 RC 1
 Author URI:
 */
 
