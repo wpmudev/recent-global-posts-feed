@@ -3,7 +3,7 @@
 Plugin Name: Recent Global Posts Feed
 Plugin URI:
 Description: RSS2 feed showing global posts - to access feed go to http://yoursite.com/feed/globalpostsfeed
-Version: 3.0 RC 1
+Version: 3.0
 Author: Barry (Incsub)
 Author URI:
 WDP ID: 70
