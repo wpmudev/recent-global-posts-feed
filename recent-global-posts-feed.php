@@ -35,17 +35,11 @@ $more = 1;
 
 echo '<?xml version="1.0" encoding="' . get_option('blog_charset') . '"?' . '>';
 
-$number = $_GET['number'];
-if ( empty( $number ) ) {
-	$number = '25';
-}
+$number = isset($_GET['number']) ? $_GET['number'] : 25;
 
-$posttype = $_GET['posttype'];
-if(empty($posttype)) {
-	$posttype = 'post';
-}
+$posttype = isset($_GET['posttype']) ? $_GET['posttype'] : 'post';
 
-$network_query = network_query_posts( array( 'post_type' => $posttype, 'posts_per_page' => $number ));
+$network_query_posts = network_query_posts( array( 'post_type' => $posttype, 'posts_per_page' => $number ));
 
 ?>
 <rss version="2.0"
