@@ -53,7 +53,7 @@ $network_query_posts = network_query_posts( array( 'post_type' => $posttype, 'po
 >
 
 <channel>
-	<title><?php bloginfo_rss('name'); _e(' - Recent Global Posts','postindexer'); ?></title>
+	<title><?php bloginfo_rss('name') ?> - <?php _e('Recent Global Posts','rpgpfwidgets'); ?></title>
 	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
 	<link><?php bloginfo_rss('url') ?></link>
 	<description><?php bloginfo_rss("description") ?></description>
