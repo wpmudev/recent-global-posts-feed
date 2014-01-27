@@ -35,6 +35,8 @@ if ( get_current_blog_id() != 1 ) {
 add_action( 'init', 'globalpostsfeed_setup_textdomain' );
 add_action( 'init', 'globalpostsfeed_setup_feed' );
 
+add_filter( 'network_admin_plugin_action_links', 'globalpostsfeed_action_links', 10, 2 );
+
 register_activation_hook( __FILE__, 'globalpostsfeed_activation' );
 register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
 
@@ -115,4 +117,16 @@ function globalpostsfeed_do_feed() {
 			<?php endwhile; ?>
 		</channel>
 	</rss><?php
+}
+
+function globalpostsfeed_action_links( $actions, $plugin ) {
+	if ( $plugin == plugin_basename( __FILE__ ) ) {
+		array_unshift( $actions, sprintf(
+			'<a href="%s" target="_blank">%s</a>',
+			site_url( '/feed/globalpostsfeed' ),
+			esc_html__( 'Feed URL', 'rpgpfwidgets' )
+		) );
+	}
+	
+	return $actions;
 }
