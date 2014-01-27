@@ -2,7 +2,7 @@
 /*
 Plugin Name: Recent Posts Feed Icon Widget
 Description: Allows a link to the Global Posts Feed to be placed in the sidebar
-Author: Incsub
+Author: WPMU DEV
 Author URI: http://premium.wpmudev.org/
 Version: 3.1
 */
