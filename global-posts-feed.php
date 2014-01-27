@@ -28,18 +28,27 @@ Network: true
 // | MA 02110-1301 USA                                                    |
 // +----------------------------------------------------------------------+
 
-register_activation_hook( __FILE__, 'flush_rewrite_rules' );
+if ( get_current_blog_id() != 1 ) {
+	return;
+}
+
+add_action( 'init', 'globalpostsfeed_setup_textdomain' );
+add_action( 'init', 'globalpostsfeed_setup_feed' );
+
+register_activation_hook( __FILE__, 'globalpostsfeed_activation' );
 register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
 
-if ( get_current_blog_id() == 1 ) {
-	// Only add the feed for the main site
-	add_action( 'init', 'globalpostsfeed_setup_feed' );
+function globalpostsfeed_setup_textdomain() {
+	load_plugin_textdomain( 'rpgpfwidgets', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }
 
 function globalpostsfeed_setup_feed() {
-	load_plugin_textdomain( 'rpgpfwidgets', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-
 	add_feed( 'globalpostsfeed', 'globalpostsfeed_do_feed' );
+}
+
+function globalpostsfeed_activation() {
+	globalpostsfeed_setup_feed();
+	flush_rewrite_rules();
 }
 
 function globalpostsfeed_do_feed() {
@@ -54,6 +63,7 @@ function globalpostsfeed_do_feed() {
 	remove_all_filters( 'excerpt_more' );
 
 	if ( !headers_sent() ) {
+		status_header( 200 );
 		header( 'Content-Type: ' . feed_content_type( 'rss-http' ) . '; charset=' . get_option( 'blog_charset' ), true );
 	}
 
