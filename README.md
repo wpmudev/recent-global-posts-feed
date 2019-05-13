@@ -2,7 +2,14 @@
 
 **INACTIVE NOTICE: This plugin is unsupported by WPMUDEV, we've published it here for those technical types who might want to fork and maintain it for their needs.**
 
-## Recent Global Posts feed takes advantage of Post Indexer to add an RSS feed of all the posts on your entire Multisite or BuddyPress network - simply, efficiently and quickly.
+## Translations
+
+Translation files can be found at https://github.com/wpmudev/translations
+
+
+## Usage
+
+Recent Global Posts feed takes advantage of Post Indexer to add an RSS feed of all the posts on your entire Multisite or BuddyPress network - simply, efficiently and quickly.
 
 ##### This powerful plugin allows you to:
 
